@@ -22,7 +22,6 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
-  const [isPreview, setIsPreview] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const onTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -36,17 +35,12 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
 
     getMovie(query).then((data: MovieData | ResponseError) => {
       if ('Error' in data) {
-        console.log(data);
         setError(true);
-        setIsPreview(false);
         setIsLoading(false);
 
         return;
       }
 
-      console.log(typeof data.Poster);
-
-      setIsPreview(true);
       setMovie({
         title: data.Title,
         imdbId: data.imdbID,
@@ -70,7 +64,6 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
 
     setMovie(null);
     setQuery('');
-    setIsPreview(false);
   };
 
   return (
@@ -116,7 +109,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
             </button>
           </div>
 
-          {isPreview && (
+          {movie && (
             <div className="control">
               <button
                 data-cy="addButton"
@@ -131,7 +124,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
         </div>
       </form>
 
-      {isPreview && (
+      {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
           <MovieCard movie={movie} />
